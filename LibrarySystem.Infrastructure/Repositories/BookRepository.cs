@@ -280,7 +280,7 @@ namespace LibrarySystem.Infrastructure.Repositories
             {
                 query = query.Where(b => b.Language.ToLower().Contains(queryParameterBook.Language.ToLower()));
             }
-            query = query.OrderBy(b => b.Title);
+            query = query.OrderBy(b => b.Title).Skip((queryParameterBook.PageNumber - 1) * queryParameterBook.PageSize).Take(queryParameterBook.PageSize);
             return await query.ToListAsync();
         }
         public async Task<IEnumerable<Book>> GetAllAsyncBookFiltered2(QueryParameterBook queryParameterBook)

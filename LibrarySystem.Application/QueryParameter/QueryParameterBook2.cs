@@ -10,6 +10,8 @@ namespace LibrarySystem.Application.QueryParameter
         public string LogicOperator3 { get; set; }
         public string ISBN { get; set; }
         public string Language { get; set; }
+        public int PageSize { get; set; } = 10;
+        public int PageNumber { get; set;} =1;
     }
 
 }

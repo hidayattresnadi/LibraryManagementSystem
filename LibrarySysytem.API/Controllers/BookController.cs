@@ -33,8 +33,7 @@ namespace LibrarySysytem.API.Controllers
                 Category = category,
                 Title = title,
                 Author = author,
-                LogicOperator =logicOperator
-
+                LogicOperator =logicOperator,
             };
             var books = await _bookService.GetAllBooks(queryParameters);
             return Ok(books);
@@ -47,7 +46,9 @@ namespace LibrarySysytem.API.Controllers
                                                      [FromQuery] string? category,
                                                      [FromQuery] string? logicOperator3,
                                                      [FromQuery] string? isbn,
-                                                     [FromQuery] string? language
+                                                     [FromQuery] string? language,
+                                                     [FromQuery] int pageNumber,
+                                                     [FromQuery] int pageSize
             )
         {
             var queryParameters = new QueryParameterBook2
@@ -59,7 +60,9 @@ namespace LibrarySysytem.API.Controllers
                 LogicOperator1 =logicOperator1,
                 LogicOperator2 =logicOperator2,
                 LogicOperator3 =logicOperator3,
-                Language = language
+                Language = language,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
             var books = await _bookService.GetAllBooks2(queryParameters);
             return Ok(books);
