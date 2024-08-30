@@ -1,4 +1,5 @@
 using LibrarySystem.Application.DTO;
+using LibrarySystem.Application.DTO.UserDTO;
 using LibrarySystem.Domain.Models;
 
 namespace LibrarySystem.Application.Services

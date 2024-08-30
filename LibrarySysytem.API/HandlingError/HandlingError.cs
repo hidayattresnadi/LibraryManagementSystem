@@ -18,6 +18,12 @@ public class ErrorHandlerMiddleware
         }
         catch (Exception ex)
         {
+            if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+            {
+                context.Response.ContentType = "application/json";
+                var errorResponse = JsonSerializer.Serialize(new { error = "Access denied. You do not have permission to access this resource." });
+                await context.Response.WriteAsync(errorResponse);
+            }
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -26,6 +32,7 @@ public class ErrorHandlerMiddleware
     {
         HttpStatusCode code;
         string result;
+        Console.WriteLine(exception);
         
         switch (exception)
         {
@@ -40,6 +47,10 @@ public class ErrorHandlerMiddleware
             case InvalidOperationException:
                 code = HttpStatusCode.BadRequest;
                 result = JsonSerializer.Serialize(new { error = exception.Message });
+                break;
+            case UnauthorizedAccessException:
+                code = HttpStatusCode.Unauthorized;
+                result = JsonSerializer.Serialize(new { error = "Unauthorized access. Only Librarian Manager can access this feature." });
                 break;
             // Add more custom exceptions and HTTP status codes as needed
 

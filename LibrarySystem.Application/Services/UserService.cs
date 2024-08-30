@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Application.DTO;
+using LibrarySystem.Application.DTO.UserDTO;
 using LibrarySystem.Application.Repositories;
 using LibrarySystem.Domain.Models;
 

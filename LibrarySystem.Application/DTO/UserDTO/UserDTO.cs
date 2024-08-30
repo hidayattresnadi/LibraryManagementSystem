@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LibrarySystem.Application.DTO
+namespace LibrarySystem.Application.DTO.UserDTO
 {
     public class UserDTO
     {

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace LibrarySystem.Domain.Services
 {
-    internal class BorrowingService
+    public class BorrowingService
     {
+
     }
 }

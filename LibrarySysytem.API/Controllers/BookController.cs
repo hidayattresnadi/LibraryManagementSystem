@@ -1,6 +1,8 @@
 ﻿using LibrarySystem.Application.DTO;
 using LibrarySystem.Application.QueryParameter;
+using LibrarySystem.Application.Roles;
 using LibrarySystem.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySysytem.API.Controllers
@@ -14,12 +16,14 @@ namespace LibrarySysytem.API.Controllers
         {
             _bookService = bookService;
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddBook([FromBody] BookDTO book)
         {
             var inputBook = await _bookService.AddBook(book);
             return Ok(inputBook);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllBooks([FromQuery] string? title,
                                                      [FromQuery] string? logicOperator,
@@ -38,6 +42,7 @@ namespace LibrarySysytem.API.Controllers
             var books = await _bookService.GetAllBooks(queryParameters);
             return Ok(books);
         }
+        [Authorize]
         [HttpGet("V2")]
         public async Task<IActionResult> GetAllBooks2([FromQuery] string? title,
                                                      [FromQuery] string? logicOperator1,
@@ -67,25 +72,28 @@ namespace LibrarySysytem.API.Controllers
             var books = await _bookService.GetAllBooks2(queryParameters);
             return Ok(books);
         }
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookById(int id)
         {
             BookDTOGetDetail book = await _bookService.GetBookDetail(id);
             return Ok(book);
         }
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditBook([FromBody] BookDTO book, int id)
         {
             var updatedBook = await _bookService.UpdateBook(book, id);
             return Ok(updatedBook);
         }
+        [Authorize(Roles =Roles.Role_Librarian+","+Roles.Role_Library_Manager)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             await _bookService.DeleteBook(id);
             return Ok("Book is deleted");
         }
-
+        [Authorize(Roles = Roles.Role_Library_User)]
         [HttpDelete("book_deleted/{id}")]
         public async Task<IActionResult> UpdateIntoDeletedBook (int id, [FromBody] string deleteReasoning)
         {
