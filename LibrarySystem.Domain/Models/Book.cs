@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LibrarySystem.Domain.Models
 {
@@ -28,5 +29,7 @@ namespace LibrarySystem.Domain.Models
         public string? DeleteReasoning { get; set; }
         public int AvailableBooks { get; set; }
         public string? Language { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Borrowing> Borrows { get; set; } = new List<Borrowing>();
     }
 }

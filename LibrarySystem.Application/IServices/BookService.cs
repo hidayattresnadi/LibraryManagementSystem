@@ -14,5 +14,6 @@ namespace LibrarySystem.Application.Services
         Task<BookDTO> UpdateBook(BookDTO book, int id);
         Task<bool> DeleteBook(int id);
         Task<Book> UpdateIntoDeletedBook(int id, string deleteReasoning);
+        Task<bool> AddRequestAddingBook(BookDTORequest request, int workflowId);
     }
 }

@@ -21,7 +21,7 @@ namespace LibrarySystem.Application.DTO
 
         [Required(ErrorMessage = "ISBN is required")]
         public string ISBN { get; set; }
-        [Required(ErrorMessage = "ISBN is required")]
+        [Required(ErrorMessage = "Location is required")]
         public string LibraryLocation { get; set; }
     }
 }

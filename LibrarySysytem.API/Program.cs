@@ -4,6 +4,7 @@ using LibrarySystem.Domain.Models;
 using LibrarySystem.Infrastructure;
 using LibrarySystem.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
@@ -22,6 +23,17 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService,TokenService>();
+builder.Services.AddScoped<IWorkflowService, WorkflowService>();
+builder.Services.AddScoped<IWorkflowSequenceService, WorkflowSequenceService>();
+builder.Services.AddScoped<IProcessService, ProcessService>();
+builder.Services.AddScoped<INextStepRulesService, NextStepRulesService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.Configure<FormOptions>(o => {
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Numerics;
@@ -59,6 +60,7 @@ namespace LibrarySystem.Application.Services
             };
 
             await _userService.AddUser(newUser);
+            user.UserId = newUser.UserId;
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -93,13 +95,15 @@ namespace LibrarySystem.Application.Services
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 foreach (var userRole in userRoles)
                 {
+                    var role = await _roleManager.FindByNameAsync(userRole);
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                    authClaims.Add(new Claim("RoleId", role.Id));
                 }
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
@@ -164,12 +168,14 @@ namespace LibrarySystem.Application.Services
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName), // Nama pengguna
+                new Claim(ClaimTypes.NameIdentifier, user.Id), // Nama pengguna
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // ID unik untuk token
             };
             foreach (var userRole in userRoles)
             {
+                var role = await _roleManager.FindByNameAsync(userRole);
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                authClaims.Add(new Claim("RoleId", role.Id));
             }
 
             // Generate new access token
@@ -225,6 +231,29 @@ namespace LibrarySystem.Application.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public async Task<Response> AssignRoleAsync(string userId, string roleName)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new Response { Status = "Error", Message = "Role does not exist." };
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new Response { Status = "Error", Message = "User not found." };
+            }
+            var roleExists = await _roleManager.RoleExistsAsync(roleName);
+            if (!roleExists)
+            {
+                return new Response { Status = "Error", Message = "Role does not exist." };
+            }
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (result.Succeeded)
+            {
+                return new Response { Status = "Success", Message = "Role assigned successfully." };
+            }
+            return new Response { Status = "Error", Message = "Failed to assign role." };
         }
     }
 }

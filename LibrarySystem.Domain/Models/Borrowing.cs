@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LibrarySystem.Domain.Models
@@ -19,7 +20,9 @@ namespace LibrarySystem.Domain.Models
         public DateTime? ReturnDate { get; set; }
         public bool HasUnpaidPenalty { get; set; } = false;
         public decimal? PenaltyAmount { get; set; }
-        public virtual User User { get; set; }
-        public virtual Book Book { get; set; }
+        [JsonIgnore]
+        public virtual User User { get; set; } = null;
+        [JsonIgnore]
+        public virtual Book Book { get; set; } = null;
     }
 }

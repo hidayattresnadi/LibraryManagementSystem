@@ -1,6 +1,9 @@
 ﻿using LibrarySystem.Application.IServices;
+using LibrarySystem.Application.Mail;
 using LibrarySystem.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mail;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace LibrarySysytem.API.Controllers
 {
@@ -9,19 +12,38 @@ namespace LibrarySysytem.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IEmailService _emailService;
+        public AuthController(IAuthService authService,IEmailService emailService)
         {
             _authService = authService;
+            _emailService = emailService;
         }
         [HttpPost("register")]
 
-        public async Task<IActionResult> RegisterAsync([FromBody] Register model)
+        public async Task<IActionResult> RegisterAsync([FromForm] IFormFileCollection Attachments, [FromForm] Register model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await _authService.Register(model);
+            var htmlTemplate = System.IO.File.ReadAllText(@"./Templates/EmailTemplate/RegisterPage.html");
+            htmlTemplate = htmlTemplate.Replace("{{Name}}", model.UserName);
+            htmlTemplate = htmlTemplate.Replace("{{Password}}", model.Password);
+            htmlTemplate = htmlTemplate.Replace("{{Email}}", model.Email);
 
+            var mailData = new MailData
+            {
+                EmailToName = model.UserName,
+                EmailSubject = "Books Query Results",
+                Attachments = Attachments,
+            };
+            //mailData.EmailToIds.Add("hidayattresnadi@gmail.com");
+            //mailData.EmailToIds.Add("hidayat.tresnadi@solecode.id");
+            //mailData.EmailCCIds.Add("kallenkaslana243@gmail.com");
+            mailData.EmailBody = htmlTemplate;
+
+            // Send email
+            var emailResult = _emailService.SendEmailAsync(mailData);
             if (result.Status == "Error")
                 return BadRequest(result.Message);
             return Ok(result);
@@ -61,6 +83,15 @@ namespace LibrarySysytem.API.Controllers
         {
             var response = await _authService.LogoutAsync(email);
             return Ok(response);
+        }
+        [HttpPatch("/assign_role/{userId}")]
+        public async Task<IActionResult> AssignRoleAsync(string userId, [FromBody] string roleName)
+        {
+            var result = await _authService.AssignRoleAsync(userId, roleName);
+
+            if (result.Status == "Error")
+                return BadRequest(result.Message);
+            return Ok(result);
         }
     }
 }

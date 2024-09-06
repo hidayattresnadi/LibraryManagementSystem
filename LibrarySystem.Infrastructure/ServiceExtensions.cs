@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Application.Repositories;
+using LibrarySystem.Domain.IRepositories;
 using LibrarySystem.Infrastructure.Context;
 using LibrarySystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,13 @@ namespace LibrarySystem.Infrastructure
             services.AddDbContext<MyDbContext>(options => options.UseNpgsql(connection));
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+            services.AddScoped<IWorkflowSequenceRepository, WorkflowSequenceRepository>();
+            services.AddScoped<IRequestRepository, RequestRepository>();
+            services.AddScoped<IWorkflowActionRepository, WorkflowActionRepository>();
+            services.AddScoped<IProcessRepository, ProcessRepository>();
+            services.AddScoped<INextStepRulesRepository, NextStepRulesRepository>();
+            services.AddScoped<IBookRequestRepository, BookRequestRepository>();
         }
     }
 }

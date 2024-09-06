@@ -16,6 +16,7 @@ namespace LibrarySystem.Application.IServices
         Task<Response> CreateRoleAsync(string rolename);
         Task<Response> RefreshToken(RefreshTokenRequest request);
         Task<Response> LogoutAsync(string email);
+        Task<Response> AssignRoleAsync(string userId, string roleName);
 
     }
 }
