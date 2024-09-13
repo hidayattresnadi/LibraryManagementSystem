@@ -23,6 +23,7 @@ namespace LibrarySystem.Infrastructure
             services.AddScoped<IProcessRepository, ProcessRepository>();
             services.AddScoped<INextStepRulesRepository, NextStepRulesRepository>();
             services.AddScoped<IBookRequestRepository, BookRequestRepository>();
+            services.AddScoped<IBorrowingRepository, BorrowingRepository>();
         }
     }
 }

@@ -43,6 +43,19 @@ namespace LibrarySystem.Infrastructure.Repositories
             IQueryable<T> queries = _dbSet.Where(expression);
             return await queries.ToListAsync();
         }
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression, string? includeProperties = null)
+        {
+          IQueryable<T> entities = _dbSet;
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                string[] includeProps = includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var include in includeProps)
+                {
+                    entities = entities.Include(include);
+                }
+            }
+            return await entities.Where(expression).ToListAsync();
+        }
         public bool Remove(T entity)
         {
             _dbSet.Remove(entity);

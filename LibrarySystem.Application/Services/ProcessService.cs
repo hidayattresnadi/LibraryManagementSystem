@@ -1,8 +1,10 @@
 ﻿using LibrarySystem.Application.DTO;
+using LibrarySystem.Domain.DTO.ProcessDTO;
 using LibrarySystem.Application.IServices;
 using LibrarySystem.Application.Mail;
 using LibrarySystem.Application.Repositories;
 using LibrarySystem.Application.Roles;
+using LibrarySystem.Domain.DTO.Dashboard;
 using LibrarySystem.Domain.IRepositories;
 using LibrarySystem.Domain.Models;
 using Microsoft.AspNetCore.Http;
@@ -210,6 +212,21 @@ namespace LibrarySystem.Application.Services
                 Status = "Success",
                 Message = "Process review result is out"
             };
+        }
+        public async Task<IEnumerable<ProcessDetailDTO>> GetProcessCurrentUser()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            var processUsers = await _processRepository.GetAllAsync(p => p.RequesterId == userId, "Requester,WorkflowSequence,Workflow");
+            var processUsersDTO = processUsers.Select(c => new ProcessDetailDTO
+            {
+                ProcessId = c.ProcessId,
+                WorkflowName = c.Workflow.WorkflowName,
+                Requester = c.Requester.UserName,
+                RequestDate = c.RequestDate,
+                Status = c.Status,
+                CurrentStep = c.WorkflowSequence.StepName
+            }).ToList();
+            return processUsersDTO;
         }
     }
 }

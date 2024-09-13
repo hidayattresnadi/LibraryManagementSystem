@@ -1,6 +1,7 @@
 using LibrarySystem.Application.IServices;
 using LibrarySystem.Application.Services;
 using LibrarySystem.Domain.Models;
+using LibrarySystem.Domain.Services;
 using LibrarySystem.Infrastructure;
 using LibrarySystem.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,6 +28,8 @@ builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IWorkflowSequenceService, WorkflowSequenceService>();
 builder.Services.AddScoped<IProcessService, ProcessService>();
 builder.Services.AddScoped<INextStepRulesService, NextStepRulesService>();
+builder.Services.AddScoped<IBorrowingService, BorrowingService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<FormOptions>(o => {

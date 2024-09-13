@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Application.DTO;
+using LibrarySystem.Domain.DTO.ProcessDTO;
 using LibrarySystem.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace LibrarySystem.Application.IServices
     public interface IProcessService
     {
         Task<Response> ReviewRequest(int processId, RequestApproval request);
+        Task<IEnumerable<ProcessDetailDTO>> GetProcessCurrentUser();
     }
 }

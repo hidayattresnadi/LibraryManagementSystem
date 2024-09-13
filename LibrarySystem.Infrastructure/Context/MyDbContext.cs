@@ -30,6 +30,18 @@ namespace LibrarySystem.Infrastructure.Context
         {
 
             base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<BookRequest>()
+                .HasOne(l => l.Process)
+                .WithMany(p => p.BookRequests )
+                .HasForeignKey(l => l.ProcessId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkflowSequence>()
+                .HasOne(ws => ws.Role) // Navigasi ke AspNetRoles
+                .WithOne() // Tidak ada navigasi balik
+                .HasForeignKey<WorkflowSequence>(ws => ws.RequiredRole) // Foreign key di WorkflowSequence
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Book>(entity =>
             {

@@ -3,6 +3,7 @@ using LibrarySystem.Domain.Models;
 using LibrarySystem.Application.Repositories;
 using LibrarySystem.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using LibrarySystem.Domain.DTO.Dashboard;
 
 namespace LibrarySystem.Infrastructure.Repositories
 {
@@ -316,6 +317,15 @@ namespace LibrarySystem.Infrastructure.Repositories
             }
             query = query.OrderBy(b => b.Title);
             return await query.ToListAsync();
+        }
+        public async Task<int> GetCountingBooks()
+        {
+            return await _db.Books.CountAsync();
+        }
+        public async Task<IEnumerable<BookCategoryDTO>> GetCategoryBooks()
+        {
+            var categoryBooks = await _db.Books.GroupBy(b => b.Category).Select(g => new BookCategoryDTO{ CategoryName = g.Key, NumberOfBooks = g.Count() }).ToListAsync();
+            return categoryBooks;
         }
     }
 }

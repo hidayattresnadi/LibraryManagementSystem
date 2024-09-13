@@ -10,6 +10,12 @@ using System.Net.Mail;
 using LibrarySystem.Application.IServices;
 using Microsoft.AspNetCore.Identity;
 using LibrarySystem.Application.Roles;
+using PdfSharpCore.Pdf;
+using PdfSharpCore;
+using TheArtOfDev.HtmlRenderer.Core;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
+using LibrarySystem.Domain.DTO.Dashboard;
+using System.Collections.Generic;
 
 namespace LibrarySystem.Application.Services
 {
@@ -157,10 +163,6 @@ namespace LibrarySystem.Application.Services
         {
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             var newRequest = new Request { 
-                Author = request.Author,
-                Publisher = request.Publisher,
-                ISBN= request.ISBN,
-                Title = request.Title,
                 ProcessName = "Book Adding Request",
                 Description = "Process for handling book adding request",
                 StartDate = DateTime.UtcNow
@@ -244,6 +246,78 @@ namespace LibrarySystem.Application.Services
 
             var emailResult = _emailService.SendEmailAsync(mailData);
             return true;
+        }
+        public async Task<byte[]> generatereportpdf()
+
+        {
+
+            var bookList = await _bookRepository.GetAllAsync();
+
+            string htmlcontent = String.Empty;
+
+            htmlcontent += "<h1> Book Report </h1>";
+
+            htmlcontent += "<table>";
+
+            htmlcontent += "<tr><td>Id</td><td>Title</td><td>Author</td><td>Category</td><td>Publication Year</td><td>Price</td><td>Publisher</td></tr>";
+
+            bookList.ToList().ForEach(item => {
+
+                htmlcontent += "<tr>";
+
+                htmlcontent += "<td>" + item.Id + "</td>";
+
+                htmlcontent += "<td>" + item.Title + "</td>";
+
+                htmlcontent += "<td>" + item.Author + "</td>";
+
+                htmlcontent += "<td>" + item.Category + "</td>";
+
+                htmlcontent += "<td>" + item.PublicationYear + "</td>";
+
+                htmlcontent += "<td>" + item.Price + "</td>";
+
+                htmlcontent += "<td>" + item.Publisher + "</td>";
+
+                htmlcontent += "</tr>";
+
+            });
+
+            htmlcontent += "</table>";
+
+            var document = new PdfDocument();
+
+            var config = new PdfGenerateConfig();
+
+            config.PageOrientation = PageOrientation.Landscape;
+
+            config.PageSize = PageSize.A4;
+
+            string cssStr = File.ReadAllText(@"./Templates/EmailTemplate/style.css");
+
+            CssData css = PdfGenerator.ParseStyleSheet(cssStr);
+
+            PdfGenerator.AddPdfPages(document, htmlcontent, config, css);
+
+            MemoryStream stream = new MemoryStream();
+
+            document.Save(stream, false);
+
+            byte[] bytes = stream.ToArray();
+
+            return bytes;
+        }
+
+        public async Task<int> GetCountingBooks()
+        {
+            var totalBooks = await _bookRepository.GetCountingBooks();
+            return totalBooks;
+        }
+
+        public async Task<IEnumerable<BookCategoryDTO>> GetCategoryBooks()
+        {
+            var categoryBooks = await _bookRepository.GetCategoryBooks();
+            return categoryBooks;
         }
     }
 }

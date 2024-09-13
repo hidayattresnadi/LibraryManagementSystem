@@ -17,15 +17,6 @@ namespace LibrarySystem.Domain.Models
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; } = null;
-
-        [Required(ErrorMessage = "Title is required")]
-        public string Title { get; set; }
-        [Required(ErrorMessage = "ISBN is required")]
-        public string ISBN { get; set; }
-        [Required(ErrorMessage = "Author is required")]
-        public string Author { get; set; }
-        [Required(ErrorMessage = "Publisher is required")]
-        public string Publisher { get; set; }
         public virtual Process Process { get; set; }
     }
 }

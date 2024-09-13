@@ -7,6 +7,7 @@ namespace LibrarySystem.Application.Repositories
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression, string? includeProperties = null);
         Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> expression);
         Task<bool> AddAsync(T entity);
         Task<bool> AddRangeAsync(IEnumerable<T> entities);

@@ -1,6 +1,7 @@
 ﻿using LibrarySystem.Domain.Models;
 using LibrarySystem.Application.DTO;
 using LibrarySystem.Application.QueryParameter;
+using LibrarySystem.Domain.DTO.Dashboard;
 
 namespace LibrarySystem.Application.Services
 {
@@ -15,5 +16,8 @@ namespace LibrarySystem.Application.Services
         Task<bool> DeleteBook(int id);
         Task<Book> UpdateIntoDeletedBook(int id, string deleteReasoning);
         Task<bool> AddRequestAddingBook(BookDTORequest request, int workflowId);
+        Task<byte[]> generatereportpdf();
+        Task<int> GetCountingBooks();
+        Task<IEnumerable<BookCategoryDTO>> GetCategoryBooks();
     }
 }

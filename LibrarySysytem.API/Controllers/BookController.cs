@@ -143,5 +143,16 @@ namespace LibrarySysytem.API.Controllers
             }
             return Ok("Adding book request success");
         }
+        [HttpGet("report")]
+        public async Task<IActionResult> Report()
+        {
+
+            var Filename = "BookReport.pdf";
+
+            var file = await _bookService.generatereportpdf();
+
+            return File(file, "application/pdf", Filename);
+
+        }
     }
 }

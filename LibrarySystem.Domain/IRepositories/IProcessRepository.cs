@@ -10,5 +10,6 @@ namespace LibrarySystem.Domain.IRepositories
 {
     public interface IProcessRepository : IRepository<Process>
     {
+        Task<IEnumerable<Process>> GetProcessBasedOnRole(List<string> roles);
     }
 }

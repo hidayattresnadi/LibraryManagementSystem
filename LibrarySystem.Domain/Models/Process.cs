@@ -29,22 +29,6 @@ namespace LibrarySystem.Domain.Models
         public virtual Request Request { get; set; }
         public DateTime RequestDate { get; set; }
         public virtual ICollection<WorkflowAction> WorkflowActions { get; set; }
+        public virtual ICollection<BookRequest> BookRequests { get; set; }
     }
-
 }
-
-
-
-
-
-//public class Process
-//{
-//    [Key]
-//    public int ProcessId { get; set; }
-//    public string ProcessName { get; set; }
-//    public string Description { get; set; }
-//    public DateTime StartDate { get; set; }
-//    public DateTime EndDate { get; set; }
-//    // Relasi ke Request
-//    public ICollection<Request> Requests { get; set; } = new List<Request>();
-//}
